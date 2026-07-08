@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organiser Dashboard</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h1>Organiser Dashboard</h1>
+    </div>
+
+    <div class="container">
+
+        <!-- Site Information -->
+        <div class="card">
+
+            <h2><%= settings.site_name %></h2>
+
+            <p><%= settings.site_description %></p>
+
+            <br>
+
+            <a href="/settings" class="btn btn-primary">
+                Site Settings
+            </a>
+
+            <form action="/organiser/create" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-success">
+                    + Create New Event
+                </button>
+            </form>
+
+        </div>
+
+        <!-- Published Events -->
+        <div class="card">
+
+            <h2>Published Events</h2>
+
+            <% if(publishedEvents.length === 0){ %>
+
+                <p>No published events available.</p>
+
+            <% } else { %>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Full Tickets</th>
+                        <th>Concession Tickets</th>
+                        <th>Published</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                <% publishedEvents.forEach(event => { %>
+
+                    <tr>
+
+                        <td>
+                            <strong><%= event.title %></strong>
+                        </td>
+
+                        <td>
+                            <%= event.event_date %>
+                        </td>
+
+                        <td>
+                            <%= event.full_ticket_qty %>
+                        </td>
+
+                        <td>
+                            <%= event.concession_ticket_qty %>
+                        </td>
+
+                        <td>
+                            <%= event.published_at || 'N/A' %>
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="/attendee/event/<%= event.event_id %>"
+                                class="btn btn-primary">
+                                Share Link
+                            </a>
+
+                            <form
+                                action="/organiser/delete/<%= event.event_id %>"
+                                method="POST"
+                                style="display:inline;">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                <% }) %>
+
+                </tbody>
+
+            </table>
+
+            <% } %>
+
+        </div>
+
+        <!-- Draft Events -->
+        <div class="card">
+
+            <h2>Draft Events</h2>
+
+            <% if(draftEvents.length === 0){ %>
+
+                <p>No draft events available.</p>
+
+            <% } else { %>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                <% draftEvents.forEach(event => { %>
+
+                    <tr>
+
+                        <td>
+                            <%= event.title %>
+                        </td>
+
+                        <td>
+                            <%= event.event_date %>
+                        </td>
+
+                        <td>
+                            <%= event.created_at %>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-draft">
+                                Draft
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="/organiser/event/<%= event.event_id %>"
+                                class="btn btn-primary">
+                                Edit
+                            </a>
+
+                            <form
+                                action="/organiser/publish/<%= event.event_id %>"
+                                method="POST"
+                                style="display:inline;">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success">
+                                    Publish
+                                </button>
+
+                            </form>
+
+                            <form
+                                action="/organiser/delete/<%= event.event_id %>"
+                                method="POST"
+                                style="display:inline;">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                <% }) %>
+
+                </tbody>
+
+            </table>
+
+            <% } %>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

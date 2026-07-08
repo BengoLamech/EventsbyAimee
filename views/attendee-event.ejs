@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= event.title %></title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h1>Event Booking</h1>
+    </div>
+
+    <div class="container">
+
+        <!-- Event Information -->
+
+        <div class="card">
+
+            <h2><%= event.title %></h2>
+
+            <p>
+                <strong>Date:</strong>
+                <%= event.event_date %>
+            </p>
+
+            <br>
+
+            <p>
+                <%= event.description %>
+            </p>
+
+        </div>
+
+        <!-- Ticket Information -->
+
+        <div class="card">
+
+            <h2>Available Tickets</h2>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Ticket Type</th>
+                        <th>Price</th>
+                        <th>Available</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>Full Price</td>
+
+                        <td>
+                            £<%= Number(event.full_ticket_price).toFixed(2) %>
+                        </td>
+
+                        <td>
+                            <%= remainingFullTickets %>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Concession</td>
+
+                        <td>
+                            £<%= Number(event.concession_ticket_price).toFixed(2) %>
+                        </td>
+
+                        <td>
+                            <%= remainingConcessionTickets %>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Booking Form -->
+
+        <div class="card">
+
+            <h2>Book Tickets</h2>
+
+            <form
+                action="/attendee/book/<%= event.event_id %>"
+                method="POST">
+
+                <div class="form-group">
+
+                    <label for="attendee_name">
+                        Your Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="attendee_name"
+                        name="attendee_name"
+                        placeholder="Enter your full name"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="full_tickets">
+                        Full Price Tickets
+                    </label>
+
+                    <input
+                        type="number"
+                        id="full_tickets"
+                        name="full_tickets"
+                        min="0"
+                        max="<%= remainingFullTickets %>"
+                        value="0"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="concession_tickets">
+                        Concession Tickets
+                    </label>
+
+                    <input
+                        type="number"
+                        id="concession_tickets"
+                        name="concession_tickets"
+                        min="0"
+                        max="<%= remainingConcessionTickets %>"
+                        value="0"
+                        required>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+                    Book Tickets
+                </button>
+
+                <a
+                    href="/attendee"
+                    class="btn btn-secondary">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+
+        <!-- Success Message -->
+
+        <% if(typeof success !== 'undefined' && success){ %>
+
+            <div class="card">
+
+                <h3 style="color:green;">
+                    Booking completed successfully.
+                </h3>
+
+            </div>
+
+        <% } %>
+
+        <!-- Error Message -->
+
+        <% if(typeof error !== 'undefined' && error){ %>
+
+            <div class="card">
+
+                <h3 style="color:red;">
+                    <%= error %>
+                </h3>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+</body>
+
+</html>

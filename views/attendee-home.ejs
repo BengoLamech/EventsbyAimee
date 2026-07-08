@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= settings.site_name %></title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h1><%= settings.site_name %></h1>
+    </div>
+
+    <div class="container">
+
+        <!-- Site Information -->
+
+        <div class="card">
+
+            <h2>Upcoming Events</h2>
+
+            <p>
+                <%= settings.site_description %>
+            </p>
+
+        </div>
+
+        <!-- Event Listings -->
+
+        <% if(events.length === 0){ %>
+
+            <div class="card">
+
+                <h3>No events available</h3>
+
+                <p>
+                    There are currently no published events.
+                </p>
+
+            </div>
+
+        <% } %>
+
+        <% events.forEach(event => { %>
+
+            <div class="card">
+
+                <h2>
+                    <%= event.title %>
+                </h2>
+
+                <p>
+                    <strong>Date:</strong>
+                    <%= event.event_date %>
+                </p>
+
+                <p>
+                    <%= event.description.length > 150
+                        ? event.description.substring(0,150) + "..."
+                        : event.description %>
+                </p>
+
+                <br>
+
+                <a
+                    href="/attendee/event/<%= event.event_id %>"
+                    class="btn btn-primary">
+                    View Event
+                </a>
+
+            </div>
+
+        <% }) %>
+
+    </div>
+
+</body>
+
+</html>

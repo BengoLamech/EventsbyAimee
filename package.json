@@ -1,0 +1,21 @@
+{
+  "name": "event-manager",
+  "version": "1.0.0",
+  "description": "dynamic web Application",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node scripts/init-db.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "sqlite3": "^6.0.1"
+  },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
+  }
+}
