@@ -10,13 +10,29 @@
 
 <body>
 
+    <!-- Navigation -->
+
     <div class="navbar">
         <h1>Organiser Dashboard</h1>
+
+        <div>
+
+            <a href="/" class="btn btn-secondary">
+                🏠 Home
+            </a>
+
+            <a href="/attendee" class="btn btn-primary">
+                🌐 View Public Events
+            </a>
+
+        </div>
+
     </div>
 
     <div class="container">
 
         <!-- Site Information -->
+
         <div class="card">
 
             <h2><%= settings.site_name %></h2>
@@ -26,18 +42,21 @@
             <br>
 
             <a href="/settings" class="btn btn-primary">
-                Site Settings
+                ⚙ Site Settings
             </a>
 
             <form action="/organiser/create" method="POST" style="display:inline;">
+
                 <button type="submit" class="btn btn-success">
-                    + Create New Event
+                    ➕ Create New Event
                 </button>
+
             </form>
 
         </div>
 
         <!-- Published Events -->
+
         <div class="card">
 
             <h2>Published Events</h2>
@@ -71,28 +90,20 @@
                             <strong><%= event.title %></strong>
                         </td>
 
-                        <td>
-                            <%= event.event_date %>
-                        </td>
+                        <td><%= event.event_date %></td>
 
-                        <td>
-                            <%= event.full_ticket_qty %>
-                        </td>
+                        <td><%= event.full_ticket_qty %></td>
 
-                        <td>
-                            <%= event.concession_ticket_qty %>
-                        </td>
+                        <td><%= event.concession_ticket_qty %></td>
 
-                        <td>
-                            <%= event.published_at || 'N/A' %>
-                        </td>
+                        <td><%= event.published_at || "N/A" %></td>
 
                         <td>
 
                             <a
                                 href="/attendee/event/<%= event.event_id %>"
                                 class="btn btn-primary">
-                                Share Link
+                                👁 View
                             </a>
 
                             <form
@@ -102,8 +113,9 @@
 
                                 <button
                                     type="submit"
-                                    class="btn btn-danger">
-                                    Delete
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Delete this event?');">
+                                    🗑 Delete
                                 </button>
 
                             </form>
@@ -123,6 +135,7 @@
         </div>
 
         <!-- Draft Events -->
+
         <div class="card">
 
             <h2>Draft Events</h2>
@@ -136,6 +149,7 @@
             <table>
 
                 <thead>
+
                     <tr>
                         <th>Title</th>
                         <th>Date</th>
@@ -143,6 +157,7 @@
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
@@ -151,22 +166,18 @@
 
                     <tr>
 
-                        <td>
-                            <%= event.title %>
-                        </td>
+                        <td><%= event.title %></td>
+
+                        <td><%= event.event_date %></td>
+
+                        <td><%= event.created_at %></td>
 
                         <td>
-                            <%= event.event_date %>
-                        </td>
 
-                        <td>
-                            <%= event.created_at %>
-                        </td>
-
-                        <td>
                             <span class="badge badge-draft">
                                 Draft
                             </span>
+
                         </td>
 
                         <td>
@@ -174,7 +185,7 @@
                             <a
                                 href="/organiser/event/<%= event.event_id %>"
                                 class="btn btn-primary">
-                                Edit
+                                ✏ Edit
                             </a>
 
                             <form
@@ -185,7 +196,7 @@
                                 <button
                                     type="submit"
                                     class="btn btn-success">
-                                    Publish
+                                    🚀 Publish
                                 </button>
 
                             </form>
@@ -197,8 +208,9 @@
 
                                 <button
                                     type="submit"
-                                    class="btn btn-danger">
-                                    Delete
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Delete this draft?');">
+                                    🗑 Delete
                                 </button>
 
                             </form>
@@ -214,6 +226,20 @@
             </table>
 
             <% } %>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div style="text-align:center; margin-top:30px;">
+
+            <a href="/" class="btn btn-secondary">
+                🏠 Back to Home
+            </a>
+
+            <a href="/attendee" class="btn btn-primary">
+                🌐 View Public Event Page
+            </a>
 
         </div>
 

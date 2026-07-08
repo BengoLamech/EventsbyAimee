@@ -10,18 +10,26 @@
 
 <body>
 
+    <!-- Navigation -->
+
     <div class="navbar">
         <h1>Organiser Event Editor</h1>
+
+        <a href="/organiser" class="btn btn-secondary">
+            ← Back to Dashboard
+        </a>
     </div>
 
     <div class="container">
+
+        <!-- Event Summary -->
 
         <div class="card">
 
             <h2>Edit Event</h2>
 
             <p>
-                Create or update event details before publishing.
+                Create or update the event details before publishing.
             </p>
 
             <br>
@@ -32,17 +40,17 @@
             </p>
 
             <% if(event.updated_at){ %>
+
                 <p>
                     <strong>Last Updated:</strong>
                     <%= event.updated_at %>
                 </p>
+
             <% } %>
 
         </div>
 
-        <form
-            action="/organiser/event/<%= event.event_id %>"
-            method="POST">
+        <form action="/organiser/event/<%= event.event_id %>" method="POST">
 
             <!-- Event Information -->
 
@@ -74,6 +82,7 @@
                     <textarea
                         id="description"
                         name="description"
+                        rows="6"
                         required><%= event.description %></textarea>
 
                 </div>
@@ -104,7 +113,7 @@
                 <div class="form-group">
 
                     <label for="full_ticket_qty">
-                        Number of Full Price Tickets
+                        Full Price Ticket Quantity
                     </label>
 
                     <input
@@ -120,7 +129,7 @@
                 <div class="form-group">
 
                     <label for="full_ticket_price">
-                        Full Ticket Price (Ksh)
+                        Full Ticket Price (Kshs)
                     </label>
 
                     <input
@@ -137,7 +146,7 @@
                 <div class="form-group">
 
                     <label for="concession_ticket_qty">
-                        Number of Concession Tickets
+                        Concession Ticket Quantity
                     </label>
 
                     <input
@@ -153,7 +162,7 @@
                 <div class="form-group">
 
                     <label for="concession_ticket_price">
-                        Concession Ticket Price (Ksh)
+                        Concession Ticket Price (Kshs)
                     </label>
 
                     <input
@@ -176,18 +185,32 @@
                 <button
                     type="submit"
                     class="btn btn-success">
-                    Save Changes
+                    💾 Save Changes
                 </button>
 
                 <a
                     href="/organiser"
                     class="btn btn-secondary">
-                    Back to Dashboard
+                    ← Cancel
                 </a>
 
             </div>
 
         </form>
+
+        <!-- Footer Navigation -->
+
+        <div style="text-align:center; margin-top:30px;">
+
+            <a href="/organiser" class="btn btn-secondary">
+                ← Return to Dashboard
+            </a>
+
+            <a href="/" class="btn btn-primary">
+                🏠 Home
+            </a>
+
+        </div>
 
     </div>
 
