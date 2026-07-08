@@ -2,9 +2,8 @@
  * Organiser Routes
  */
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-
 
 // ==================================================
 // ORGANISER HOME PAGE
@@ -18,56 +17,40 @@ const router = express.Router();
  * - Draft events
  * - Published events
  */
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
+    try {
+        const settings = global.db
+            .prepare("SELECT * FROM site_settings WHERE id = 1")
+            .get();
 
-    // Get site settings
-    db.get(
-        `SELECT * FROM site_settings WHERE id = 1`,
-        [],
-        (err, settings) => {
+        const publishedEvents = global.db
+            .prepare(`
+                SELECT *
+                FROM events
+                WHERE status = 'published'
+                ORDER BY event_date ASC
+            `)
+            .all();
 
-            if (err) {
-                return res.status(500).send(err.message);
-            }
+        const draftEvents = global.db
+            .prepare(`
+                SELECT *
+                FROM events
+                WHERE status = 'draft'
+                ORDER BY created_at DESC
+            `)
+            .all();
 
-            // Get published events
-            db.all(
-                `SELECT * FROM events
-                 WHERE status='published'
-                 ORDER BY event_date ASC`,
-                [],
-                (err, publishedEvents) => {
-
-                    if (err) {
-                        return res.status(500).send(err.message);
-                    }
-
-                    // Get draft events
-                    db.all(
-                        `SELECT * FROM events
-                         WHERE status='draft'
-                         ORDER BY created_at DESC`,
-                        [],
-                        (err, draftEvents) => {
-
-                            if (err) {
-                                return res.status(500).send(err.message);
-                            }
-
-                            res.render('organiser-home', {
-                                settings,
-                                publishedEvents,
-                                draftEvents
-                            });
-
-                        }
-                    );
-                }
-            );
-        }
-    );
+        res.render("organiser-home", {
+            settings,
+            publishedEvents,
+            draftEvents,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
-
 
 // ==================================================
 // CREATE NEW EVENT
@@ -78,44 +61,39 @@ router.get('/', (req, res) => {
  *
  * Creates a blank draft event
  */
-router.post('/create', (req, res) => {
+router.post("/create", (req, res) => {
+    try {
+        const result = global.db
+            .prepare(`
+                INSERT INTO events (
+                    title,
+                    description,
+                    event_date,
+                    full_ticket_qty,
+                    full_ticket_price,
+                    concession_ticket_qty,
+                    concession_ticket_price,
+                    status
+                )
+                VALUES (
+                    'New Event',
+                    'Enter event description',
+                    DATE('now'),
+                    0,
+                    0,
+                    0,
+                    0,
+                    'draft'
+                )
+            `)
+            .run();
 
-    db.run(
-        `
-        INSERT INTO events (
-            title,
-            description,
-            event_date,
-            full_ticket_qty,
-            full_ticket_price,
-            concession_ticket_qty,
-            concession_ticket_price,
-            status
-        )
-        VALUES (
-            'New Event',
-            'Enter event description',
-            DATE('now'),
-            0,
-            0,
-            0,
-            0,
-            'draft'
-        )
-        `,
-        function (err) {
-
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-
-            res.redirect(
-                `/organiser/event/${this.lastID}`
-            );
-        }
-    );
+        res.redirect(`/organiser/event/${result.lastInsertRowid}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
-
 
 // ==================================================
 // EDIT EVENT PAGE
@@ -126,35 +104,28 @@ router.post('/create', (req, res) => {
  *
  * Displays event editor
  */
-router.get('/event/:id', (req, res) => {
+router.get("/event/:id", (req, res) => {
+    try {
+        const eventId = req.params.id;
 
-    const eventId = req.params.id;
+        const event = global.db
+            .prepare(`
+                SELECT *
+                FROM events
+                WHERE event_id = ?
+            `)
+            .get(eventId);
 
-    db.get(
-        `
-        SELECT *
-        FROM events
-        WHERE event_id = ?
-        `,
-        [eventId],
-        (err, event) => {
-
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-
-            if (!event) {
-                return res.status(404).send("Event not found");
-            }
-
-            res.render(
-                'organiser-edit-event',
-                { event }
-            );
+        if (!event) {
+            return res.status(404).send("Event not found");
         }
-    );
-});
 
+        res.render("organiser-edit-event", { event });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
+});
 
 // ==================================================
 // SAVE EVENT CHANGES
@@ -165,35 +136,11 @@ router.get('/event/:id', (req, res) => {
  *
  * Updates event details
  */
-router.post('/event/:id', (req, res) => {
+router.post("/event/:id", (req, res) => {
+    try {
+        const eventId = req.params.id;
 
-    const eventId = req.params.id;
-
-    const {
-        title,
-        description,
-        event_date,
-        full_ticket_qty,
-        full_ticket_price,
-        concession_ticket_qty,
-        concession_ticket_price
-    } = req.body;
-
-    db.run(
-        `
-        UPDATE events
-        SET
-            title=?,
-            description=?,
-            event_date=?,
-            full_ticket_qty=?,
-            full_ticket_price=?,
-            concession_ticket_qty=?,
-            concession_ticket_price=?,
-            updated_at=CURRENT_TIMESTAMP
-        WHERE event_id=?
-        `,
-        [
+        const {
             title,
             description,
             event_date,
@@ -201,19 +148,39 @@ router.post('/event/:id', (req, res) => {
             full_ticket_price,
             concession_ticket_qty,
             concession_ticket_price,
-            eventId
-        ],
-        function (err) {
+        } = req.body;
 
-            if (err) {
-                return res.status(500).send(err.message);
-            }
+        global.db
+            .prepare(`
+                UPDATE events
+                SET
+                    title = ?,
+                    description = ?,
+                    event_date = ?,
+                    full_ticket_qty = ?,
+                    full_ticket_price = ?,
+                    concession_ticket_qty = ?,
+                    concession_ticket_price = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE event_id = ?
+            `)
+            .run(
+                title,
+                description,
+                event_date,
+                full_ticket_qty,
+                full_ticket_price,
+                concession_ticket_qty,
+                concession_ticket_price,
+                eventId
+            );
 
-            res.redirect('/organiser');
-        }
-    );
+        res.redirect("/organiser");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
-
 
 // ==================================================
 // PUBLISH EVENT
@@ -224,30 +191,26 @@ router.post('/event/:id', (req, res) => {
  *
  * Changes draft to published
  */
-router.post('/publish/:id', (req, res) => {
+router.post("/publish/:id", (req, res) => {
+    try {
+        const eventId = req.params.id;
 
-    const eventId = req.params.id;
+        global.db
+            .prepare(`
+                UPDATE events
+                SET
+                    status = 'published',
+                    published_at = CURRENT_TIMESTAMP
+                WHERE event_id = ?
+            `)
+            .run(eventId);
 
-    db.run(
-        `
-        UPDATE events
-        SET
-            status='published',
-            published_at=CURRENT_TIMESTAMP
-        WHERE event_id=?
-        `,
-        [eventId],
-        function (err) {
-
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-
-            res.redirect('/organiser');
-        }
-    );
+        res.redirect("/organiser");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
-
 
 // ==================================================
 // DELETE EVENT
@@ -258,26 +221,22 @@ router.post('/publish/:id', (req, res) => {
  *
  * Removes event from database
  */
-router.post('/delete/:id', (req, res) => {
+router.post("/delete/:id", (req, res) => {
+    try {
+        const eventId = req.params.id;
 
-    const eventId = req.params.id;
+        global.db
+            .prepare(`
+                DELETE FROM events
+                WHERE event_id = ?
+            `)
+            .run(eventId);
 
-    db.run(
-        `
-        DELETE FROM events
-        WHERE event_id=?
-        `,
-        [eventId],
-        function (err) {
-
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-
-            res.redirect('/organiser');
-        }
-    );
+        res.redirect("/organiser");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
-
 
 module.exports = router;

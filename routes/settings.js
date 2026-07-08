@@ -2,9 +2,8 @@
  * Site Settings Routes
  */
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-
 
 // =========================================
 // SETTINGS PAGE
@@ -15,29 +14,24 @@ const router = express.Router();
  *
  * Displays current site settings
  */
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
+    try {
+        const settings = global.db
+            .prepare(`
+                SELECT *
+                FROM site_settings
+                WHERE id = 1
+            `)
+            .get();
 
-    db.get(
-        `
-        SELECT *
-        FROM site_settings
-        WHERE id = 1
-        `,
-        [],
-        (err, settings) => {
-
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-
-            res.render('settings', {
-                settings
-            });
-
-        }
-    );
+        res.render("settings", {
+            settings,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
-
 
 // =========================================
 // UPDATE SETTINGS
@@ -48,45 +42,30 @@ router.get('/', (req, res) => {
  *
  * Updates site name and description
  */
-router.post('/update', (req, res) => {
+router.post("/update", (req, res) => {
+    try {
+        const { site_name, site_description } = req.body;
 
-    const {
-        site_name,
-        site_description
-    } = req.body;
-
-    // Basic validation
-    if (!site_name || !site_description) {
-
-        return res.status(400).send(
-            "All fields are required."
-        );
-
-    }
-
-    db.run(
-        `
-        UPDATE site_settings
-        SET
-            site_name = ?,
-            site_description = ?
-        WHERE id = 1
-        `,
-        [
-            site_name,
-            site_description
-        ],
-        function (err) {
-
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-
-            res.redirect('/organiser');
-
+        // Basic validation
+        if (!site_name || !site_description) {
+            return res.status(400).send("All fields are required.");
         }
-    );
-});
 
+        global.db
+            .prepare(`
+                UPDATE site_settings
+                SET
+                    site_name = ?,
+                    site_description = ?
+                WHERE id = 1
+            `)
+            .run(site_name, site_description);
+
+        res.redirect("/organiser");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
+});
 
 module.exports = router;
