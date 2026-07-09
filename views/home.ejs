@@ -1,63 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Event Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events by Aimee</title>
     <link rel="stylesheet" href="/main.css">
 </head>
 
 <body>
 
-<div class="navbar">
-    <h1>Event Manager</h1>
-</div>
+<header class="navbar">
+
+    <div class="logo">
+        <h1>Events by Aimee</h1>
+    </div>
+
+    <nav>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+</header>
 
 <div class="container">
 
-    <div class="card">
+    <section class="hero card">
 
-        <h2>Welcome to Event Manager</h2>
+        <h2>Creating Memorable Events</h2>
 
         <p>
-            Manage events, publish them and allow attendees
-            to make bookings online.
+            Welcome to Events by Aimee. We organise memorable experiences ranging
+            from weddings, birthdays, corporate events and private celebrations.
+            Browse upcoming events or manage your own bookings through our portals.
         </p>
 
-    </div>
+        <br>
 
-    <div class="home-links">
+        <a href="/attendee" class="btn btn-success">
+            Browse Events
+        </a>
 
-        <div class="home-card">
+        <a href="/organiser" class="btn btn-primary">
+            Organiser Portal
+        </a>
 
-            <h2>Organiser Portal</h2>
+    </section>
 
-            <p>Create and manage events.</p>
+    <section id="about" class="card">
 
-            <br>
+        <h2>About Us</h2>
 
-            <a href="/organiser" class="btn btn-primary">
-                Open Organiser
-            </a>
+        <p>
+            Events by Aimee is dedicated to planning exceptional events with
+            creativity, professionalism and attention to detail. Our mission is
+            to create memorable experiences while providing a seamless booking
+            process for organisers and attendees alike.
+        </p>
+
+    </section>
+
+    <section id="gallery">
+
+        <h2 style="text-align:center; margin-bottom:20px;">Event Gallery</h2>
+
+        <div class="gallery">
+
+            <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600"
+                alt="Corporate Event">
+
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600"
+                alt="Wedding">
+
+            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600"
+                alt="Concert">
+
+            <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600"
+                alt="Birthday Party">
 
         </div>
 
-        <div class="home-card">
+    </section>
 
-            <h2>Attendee Portal</h2>
+    <section id="contact" class="card">
 
-            <p>Browse and book available events.</p>
+        <h2>Contact Us</h2>
 
-            <br>
+        <p><strong>Email:</strong> info@eventsbyaimee.com</p>
 
-            <a href="/attendee" class="btn btn-success">
-                Browse Events
-            </a>
+        <p><strong>Phone:</strong> +254 700 000 000</p>
 
-        </div>
+        <p><strong>Location:</strong> Nairobi, Kenya</p>
 
-    </div>
+    </section>
 
 </div>
 
+<footer class="footer">
+
+    <p>
+        © 2026 Events by Aimee. All Rights Reserved.
+    </p>
+
+</footer>
+
 </body>
+
 </html>
